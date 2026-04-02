@@ -9,8 +9,6 @@ PIP        := $(VENV)/bin/pip
 PACKAGE    := mazegen-1.0.0
 MAIN       := a_maze_ing.py
 CONFIG	   := config.txt
-CHECKER	   := output_validator.py
-OUTPUT     := maze.txt
 
 # ------------------------------------------------------------
 #  Ansi colors
@@ -134,10 +132,3 @@ lint-strict:
 	$(ECHO) ">>> mypy (strict) …"
 	mypy . --strict
 
-# ------------------------------------------------------------
-#  checker — check the validity of the output file
-# ------------------------------------------------------------
-
-checker:
-	$(ECHO) ">>> Checking the validity of the output file..."
-	$(PYTHON) $(CHECKER) $(OUTPUT)
