@@ -3,18 +3,22 @@ def load_map(file: str) -> dict:
         with open(file, 'r') as f:
             data = f.read()
             data2 = data.splitlines()
-            data3 = []
+            data3 = {"nb_drones": None,
+                     "start_hub": None,
+                     "end_hub": None,
+                     "hub": [],
+                     "connection": []}
             for f in data2:
                 if f.startswith("nb_drones: "):
-                    data3.append(int(f.removeprefix("nb_drones: ")))
+                    data3["nb_drones"] = int(f.removeprefix("nb_drones: "))
                 if f.startswith("start_hub: "):
-                    data3.append(f.removeprefix("start_hub: "))
+                    data3["start_hub"] = f.removeprefix("start_hub: ")
                 if f.startswith("end_hub: "):
-                    data3.append(f.removeprefix("end_hub: "))
+                    data3["end_hub"] = f.removeprefix("end_hub: ")
                 if f.startswith("hub: "):
-                    data3.append(f.removeprefix("hub: "))
+                    data3["hub"].append(f.removeprefix("hub: "))
                 if f.startswith("connection: "):
-                    data3.append(f.removeprefix("connection: "))
+                    data3["connection"].append(f.removeprefix("connection: "))
 
             print(data3)
     except FileNotFoundError:
