@@ -8,7 +8,7 @@ PYTHON     := /bin/python3
 PIP        := $(VENV)/bin/pip
 PACKAGE    := mazegen-1.0.0
 MAIN       := a_maze_ing.py
-CONFIG	   := config.txt
+CONFIG	   := maps/easy/01_linear_path.txt
 
 # ------------------------------------------------------------
 #  Ansi colors
