@@ -57,10 +57,8 @@ class Parse():
                                                  self.__Parsemetadata(temp[3:])
                                                   ))
                     elif line.startswith("connection: "):
-                        temp = line.removeprefix("connection: ").split()
-                        meta = self.__Parsemetadata(temp[1:])
-                        self.data3["connection"].append({"node": temp,
-                                                         "meta": meta})
+                        temp = line.removeprefix("connection: ").strip()
+                        self.data3["connection"].append(temp.split("-"))
                 if self.verif_data(self.data3) is True:
                     return self.data3
                 else:
