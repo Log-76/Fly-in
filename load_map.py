@@ -36,11 +36,15 @@ class Parse():
                         self.data3["nb_drones"] = int(line.removeprefix(
                             "nb_drones: "))
                     elif line.startswith("start_hub: "):
+                        if self.data3["start_hub"] is not None:
+                            raise Exception("stard_hub exicte deja")
                         temp = line.removeprefix("start_hub: ").split()
                         start = (temp[0], int(temp[1]), int(temp[2]),
                                  self.__Parsemetadata(temp[3:]))
                         self.data3["start_hub"] = start
                     elif line.startswith("end_hub: "):
+                        if self.data3["end_hub"] is not None:
+                            raise Exception("end_hub exicte deja")
                         temp = line.removeprefix("end_hub: ").split()
                         self.data3["end_hub"] = (temp[0], int(temp[1]),
                                                  int(temp[2]),
