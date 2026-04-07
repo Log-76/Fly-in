@@ -22,16 +22,19 @@ class Parse():
                             "nb_drones: "))
                     elif line.startswith("start_hub: "):
                         temp = line.removeprefix("start_hub: ").split()
-                        start = (temp[0], int(temp[1]), int(temp[2]), temp[3])
+                        meta = temp[3] if len(temp) > 3 else None
+                        start = (temp[0], int(temp[1]), int(temp[2]), meta)
                         self.data3["start_hub"] = start
                     elif line.startswith("end_hub: "):
                         temp = line.removeprefix("end_hub: ").split()
+                        meta = temp[3] if len(temp) > 3 else None
                         self.data3["end_hub"] = (temp[0], int(temp[1]),
-                                                 int(temp[2]), temp[3])
+                                                 int(temp[2]), meta)
                     elif line.startswith("hub: "):
                         temp = line.removeprefix("hub: ").split()
+                        meta = temp[3] if len(temp) > 3 else None
                         self.data3["hub"].append((temp[0], int(temp[1]),
-                                                 int(temp[2]), temp[3]))
+                                                 int(temp[2]), meta))
                     elif line.startswith("connection: "):
                         self.data3["connection"].append(line.removeprefix(
                             "connection: "))
@@ -52,21 +55,24 @@ class Parse():
 
             if data["nb_drones"] < 0:
                 raise Exception("error: number of drone is negatif value")
-            start, x, y, color = data["start_hub"]
-            if (isinstance(start, str) is False or x < 0 or y < 0
-                    or "[color=" not in color):
+            start, x, y, meta = data["start_hub"]
+            if (isinstance(start, str) is False or isinstance(y, int) is False
+                    or isinstance(x, int) is False or meta is None):
                 raise Exception("error: name of starthub or color is not str "
                                 "or x or y is not number")
-            end, x, y, color = data["end_hub"]
-            if (isinstance(end, str) is False or x < 0 or y < 0
-                    or "[color=" not in color):
+
+            end, x, y, meta = data["end_hub"]
+            if (isinstance(end, str) is False or isinstance(y, int) is False
+                    or isinstance(x, int) is False or meta is None):
                 raise Exception("error: name of starthub or color is not str "
                                 "or x or y is not number")
             if data["hub"]:
                 for temp in data["hub"]:
                     hub, x, y, info = temp
-                    if (isinstance(hub, str) is False or x < 0 or y < 0 or
-                            "color=" not in info):
+                    if (isinstance(hub, str) is False
+                            or isinstance(y, int) is False
+                            or isinstance(x, int) is False or
+                            info is None):
                         raise Exception("error: number of drone is negatif")
             if data["connection"]:
                 for temp in data["connection"]:
@@ -74,7 +80,7 @@ class Parse():
                         raise Exception("error: number of drone is negatif")
             return True
         except Exception as e:
-            print(self.bold_red(e))
+            print(self.bold_red(str(e)))
             return False
 
 
