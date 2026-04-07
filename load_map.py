@@ -8,6 +8,21 @@ class Parse():
                       "hub": [],
                       "connection": []}
 
+    def __Parsemetadata(self, parts: list[str]) -> dict:
+        """Extract tags like color=#FF0000 or max_drones=5
+        from a list of strings."""
+        meta = {"zone": "normal", "color": "none", "max_drones": 1}
+        for i in parts:
+            if "=" in i:
+                key, f = i.split("=", 1)
+                if key == "zone" and f not in ["normal", "blocked",
+                                               "restricted", "priority"]:
+                    raise Exception(f"Invalid zone type: {f}")
+                if key == "max_drones":
+                    f = int(f)
+                meta[key] = f
+        return meta
+
     def load_map(self, file: str) -> dict | None:
         """Load and parse the map file and return structured data."""
         try:
@@ -22,22 +37,26 @@ class Parse():
                             "nb_drones: "))
                     elif line.startswith("start_hub: "):
                         temp = line.removeprefix("start_hub: ").split()
-                        meta = temp[3] if len(temp) > 3 else None
-                        start = (temp[0], int(temp[1]), int(temp[2]), meta)
+                        start = (temp[0], int(temp[1]), int(temp[2]),
+                                 self.__Parsemetadata(temp[3:]))
                         self.data3["start_hub"] = start
                     elif line.startswith("end_hub: "):
                         temp = line.removeprefix("end_hub: ").split()
-                        meta = temp[3] if len(temp) > 3 else None
                         self.data3["end_hub"] = (temp[0], int(temp[1]),
-                                                 int(temp[2]), meta)
+                                                 int(temp[2]),
+                                                 self.__Parsemetadata(temp[3:])
+                                                 )
                     elif line.startswith("hub: "):
                         temp = line.removeprefix("hub: ").split()
-                        meta = temp[3] if len(temp) > 3 else None
                         self.data3["hub"].append((temp[0], int(temp[1]),
-                                                 int(temp[2]), meta))
+                                                 int(temp[2]),
+                                                 self.__Parsemetadata(temp[3:])
+                                                  ))
                     elif line.startswith("connection: "):
-                        self.data3["connection"].append(line.removeprefix(
-                            "connection: "))
+                        temp = line.removeprefix("connection: ").split()
+                        meta = self.__Parsemetadata(temp[1:])
+                        self.data3["connection"].append({"node": temp,
+                                                         "meta": meta})
                 if self.verif_data(self.data3) is True:
                     return self.data3
                 else:
@@ -57,13 +76,15 @@ class Parse():
                 raise Exception("error: number of drone is negatif value")
             start, x, y, meta = data["start_hub"]
             if (isinstance(start, str) is False or isinstance(y, int) is False
-                    or isinstance(x, int) is False or meta is None):
+                    or isinstance(x, int) is False or meta is None
+                    or "-" in start or " " in start):
                 raise Exception("error: name of starthub or color is not str "
                                 "or x or y is not number")
 
             end, x, y, meta = data["end_hub"]
             if (isinstance(end, str) is False or isinstance(y, int) is False
-                    or isinstance(x, int) is False or meta is None):
+                    or isinstance(x, int) is False or meta is None
+                    or "-" in end or " " in end):
                 raise Exception("error: name of starthub or color is not str "
                                 "or x or y is not number")
             if data["hub"]:
@@ -72,12 +93,15 @@ class Parse():
                     if (isinstance(hub, str) is False
                             or isinstance(y, int) is False
                             or isinstance(x, int) is False or
-                            info is None):
+                            info is None or "-" in hub or " " in hub):
                         raise Exception("error: number of drone is negatif")
             if data["connection"]:
                 for temp in data["connection"]:
-                    if isinstance(temp, str) is False:
-                        raise Exception("error: number of drone is negatif")
+                    for i in temp:
+                        if (isinstance(i, str) is False or "-" in i
+                                or " " in i):
+                            raise Exception(
+                                "error: number of drone is negatif")
             return True
         except Exception as e:
             print(self.bold_red(str(e)))
