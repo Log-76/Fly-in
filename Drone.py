@@ -1,6 +1,7 @@
 import Zone
 import random
 
+
 class Drone():
     def __init__(self, id: str, hub: Zone, target: Zone):
         self.id = id
