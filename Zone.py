@@ -27,4 +27,5 @@ class Zone():
         return True
 
     def add_neighbor(self, neighbor: 'Zone') -> None:
+        """add neighbor"""
         self.adjacent.append(neighbor)
