@@ -1,5 +1,6 @@
-import Zone
+from Zone import Zone
 import random
+from collections import deque
 
 
 class Drone():
@@ -12,8 +13,27 @@ class Drone():
     def move(self) -> None:
         if self.target != self.hub:
             self.path.append(self.hub)
-            temp = random(self.hub.adjacent)
+            temp = random.choice(self.hub.adjacent)
             if temp.can_enter() is True:
-                self.hub.drone_current.pop()
+                self.hub.drone_current.remove(self.id)
                 self.hub = temp
                 self.hub.drone_current.append(self.id)
+
+    def compute_path(self) -> list[Zone]:
+        # 1. On met le point de départ dans la file
+        queu = deque([self.hub])
+        # 2. On garde trace des zones visitées pour éviter les boucles
+        # et pour reconstruire le chemin {enfant: parent}
+        visited = {self.hub: None}
+        while queu:
+            # On récupère la zone la plus ancienne ajoutée (popleft)
+            current_zone = queu.popleft()
+            # Si on a trouvé la destination, on arrête l'exploration
+            if current_zone == self.target:
+                break
+
+            # Sinon, on regarde les voisins
+            for neighbor in current_zone.adjacent:
+                if neighbor not in visited and neighbor.zone != "blocked":
+                    visited[neighbor] = current_zone
+                    queu.append(neighbor)
