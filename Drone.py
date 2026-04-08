@@ -44,4 +44,5 @@ class Drone():
         while current is not None:
             path.append(current)
             current = visited[current]
-        self.path = path.reverse()
+        path.reverse()
+        self.path = path
