@@ -3,24 +3,34 @@ from collections import deque
 
 
 class Drone():
-    def __init__(self, id: str, hub: Zone, target: Zone):
+    def __init__(self, id: str, hub: Zone, target: Zone) -> None:
         """declaration des variable de la classe"""
         self.id = id
         self.hub: Zone = hub
         self.target = target
         self.index = 0
+        self.total_cost = 0
+        self.couldown = 0
         self.path: list[Zone] = []
+        self.stock = {"normal": 1, "restricted": 2, "priority": 1}
 
     def move(self) -> None:
         """deplacement"""
         if self.target != self.hub:
-            if self.index < len(self.path):
-                temp = self.path[self.index]
-                if temp.can_enter() is True:
-                    self.hub.drone_current.remove(self.id)
-                    self.hub = temp
-                    self.hub.drone_current.append(self.id)
-                    self.index += 1
+            if self.couldown == 0:
+                if self.index < len(self.path):
+                    temp = self.path[self.index]
+                    if temp.zone == "restricted":
+                        self.couldown += 1
+                        pass
+                    if temp.can_enter() is True:
+                        self.total_cost += self.stock[temp.zone]
+                        self.hub.drone_current.remove(self.id)
+                        self.hub = temp
+                        self.hub.drone_current.append(self.id)
+                        self.index += 1
+            else:
+                self.couldown -= 1
 
     def compute_path(self) -> None:
         """chemin de resolution avec BFS"""
@@ -52,4 +62,4 @@ class Drone():
             path.append(current)
             current = visited[current]
         path.reverse()
-        self.path = path
+        self.path = path[1:]
