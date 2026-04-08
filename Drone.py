@@ -4,6 +4,7 @@ from collections import deque
 
 class Drone():
     def __init__(self, id: str, hub: Zone, target: Zone):
+        """declaration des variable de la classe"""
         self.id = id
         self.hub: Zone = hub
         self.target = target
@@ -11,6 +12,7 @@ class Drone():
         self.path: list[Zone] = []
 
     def move(self) -> None:
+        """deplacement"""
         if self.target != self.hub:
             if self.index < len(self.path):
                 temp = self.path[self.index]
@@ -20,7 +22,8 @@ class Drone():
                     self.hub.drone_current.append(self.id)
                     self.index += 1
 
-    def compute_path(self) -> list[Zone]:
+    def compute_path(self) -> None:
+        """chemin de resolution avec BFS"""
         # 1. On met le point de départ dans la file
         queu = deque([self.hub])
         # 2. On garde trace des zones visitées pour éviter les boucles
@@ -38,6 +41,10 @@ class Drone():
                 if neighbor not in visited and neighbor.zone != "blocked":
                     visited[neighbor] = current_zone
                     queu.append(neighbor)
+
+        if self.target not in visited:
+            self.path = []
+            return
 
         path = []
         current = self.target
