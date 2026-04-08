@@ -33,3 +33,5 @@ class Graph():
         self.load_hub()
         self.load_connex()
         self.load_drones()
+        for drone in self.drones:
+            drone.compute_path()
