@@ -38,3 +38,10 @@ class Drone():
                 if neighbor not in visited and neighbor.zone != "blocked":
                     visited[neighbor] = current_zone
                     queu.append(neighbor)
+
+        path = []
+        current = self.target
+        while current is not None:
+            path.append(current)
+            current = visited[current]
+        self.path = path.reverse()
