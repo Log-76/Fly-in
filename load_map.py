@@ -72,23 +72,30 @@ class Parse():
         return f"{color}{text}{reset}"
 
     def verif_data(self, data: dict) -> bool:
+        """verif of data"""
         try:
-
-            if data["nb_drones"] < 0:
-                raise Exception("error: number of drone is negatif value")
-            start, x, y, meta = data["start_hub"]
-            if (isinstance(start, str) is False or isinstance(y, int) is False
-                    or isinstance(x, int) is False or meta is None
-                    or "-" in start or " " in start):
-                raise Exception("error: name of starthub or color is not str "
-                                "or x or y is not number")
-
-            end, x, y, meta = data["end_hub"]
-            if (isinstance(end, str) is False or isinstance(y, int) is False
-                    or isinstance(x, int) is False or meta is None
-                    or "-" in end or " " in end):
-                raise Exception("error: name of starthub or color is not str "
-                                "or x or y is not number")
+            if data["nb_drones"] is None or data["nb_drones"] <= 0:
+                raise Exception("error: number of drone is <= 0")
+            if data["start_hub"] is not None:
+                start, x, y, meta = data["start_hub"]
+                if (isinstance(start, str) is False
+                        or isinstance(y, int) is False
+                        or isinstance(x, int) is False or meta is None
+                        or "-" in start or " " in start):
+                    raise Exception("error: name of starthub or color is not"
+                                    " str or x or y is not number")
+            else:
+                raise Exception("no data for start hub")
+            if data["end_hub"] is not None:
+                end, x, y, meta = data["end_hub"]
+                if (isinstance(end, str) is False
+                        or isinstance(y, int) is False
+                        or isinstance(x, int) is False or meta is None
+                        or "-" in end or " " in end):
+                    raise Exception("error: name of starthub or color is not"
+                                    " str or x or y is not number")
+            else:
+                raise Exception("no data for end hub")
             if data["hub"]:
                 for temp in data["hub"]:
                     hub, x, y, info = temp
@@ -98,7 +105,12 @@ class Parse():
                             info is None or "-" in hub or " " in hub):
                         raise Exception("error: number of drone is negatif")
             if data["connection"]:
+                seen = set()
                 for temp in data["connection"]:
+                    key = tuple(sorted(temp))
+                    if key in seen:
+                        raise Exception(f"error: duplicate connection {temp}")
+                    seen.add(key)
                     for i in temp:
                         if (isinstance(i, str) is False or "-" in i
                                 or " " in i):
