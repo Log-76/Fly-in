@@ -14,6 +14,7 @@ class Parse():
         meta = {"zone": "normal", "color": "none", "max_drones": 1}
         for i in parts:
             if "=" in i:
+                i = i.strip("[]")
                 key, f = i.split("=", 1)
                 if key == "zone" and f not in ["normal", "blocked",
                                                "restricted", "priority"]:
@@ -57,8 +58,13 @@ class Parse():
                                                  self.__Parsemetadata(temp[3:])
                                                   ))
                     elif line.startswith("connection: "):
-                        temp = line.removeprefix("connection: ").strip()
-                        self.data3["connection"].append(temp.split("-"))
+                        temp = line.removeprefix("connection: ").split()
+                        if len(temp) > 1:
+                            meta = self.__Parsemetadata(temp[1:])
+                            self.data3["connection"].append((temp[0], meta))
+                        else:
+                            self.data3["connection"].append(temp[0].split("-"))
+
                 if self.verif_data(self.data3) is True:
                     return self.data3
                 else:
@@ -107,15 +113,19 @@ class Parse():
             if data["connection"]:
                 seen = set()
                 for temp in data["connection"]:
-                    key = tuple(sorted(temp))
+                    hub_name = [item for item in temp if isinstance(item, str)]
+
+                    if len(hub_name) < 2:
+                        continue
+
+                    for name in hub_name:
+                        if (isinstance(name, str) is False or "-" in name
+                                or " " in name):
+                            raise Exception("error:")
+                    key = tuple(sorted(hub_name))
                     if key in seen:
                         raise Exception(f"error: duplicate connection {temp}")
                     seen.add(key)
-                    for i in temp:
-                        if (isinstance(i, str) is False or "-" in i
-                                or " " in i):
-                            raise Exception(
-                                "error: number of drone is negatif")
             return True
         except Exception as e:
             print(self.bold_red(str(e)))
@@ -123,4 +133,4 @@ class Parse():
 
 
 m = Parse()
-print(m.load_map("maps/easy/01_linear_path.txt"))
+print(m.load_map("maps/hard/02_capacity_hell.txt"))
