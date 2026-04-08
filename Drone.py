@@ -12,12 +12,13 @@ class Drone():
 
     def move(self) -> None:
         if self.target != self.hub:
-            temp = self.path[self.index]
-            if temp.can_enter() is True:
-                self.hub.drone_current.remove(self.id)
-                self.hub = temp
-                self.hub.drone_current.append(self.id)
-                self.index += 1
+            if self.index < len(self.path):
+                temp = self.path[self.index]
+                if temp.can_enter() is True:
+                    self.hub.drone_current.remove(self.id)
+                    self.hub = temp
+                    self.hub.drone_current.append(self.id)
+                    self.index += 1
 
     def compute_path(self) -> list[Zone]:
         # 1. On met le point de départ dans la file
