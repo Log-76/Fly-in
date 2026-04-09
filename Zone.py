@@ -3,7 +3,7 @@ from typing import Any
 
 class Zone():
     def __init__(self, name: str, x: int, y: int, zone: str,
-                 max_drone: int, color=None) -> None:
+                 max_drone: int = 1, color=None) -> None:
         """init for data for zone"""
         self.name = name
         self.x = x

@@ -25,6 +25,7 @@ class Drone():
                         pass
                     if temp.can_enter() is True:
                         self.total_cost += self.stock[temp.zone]
+                        print(self.hub.drone_current)
                         self.hub.drone_current.remove(self.id)
                         self.hub = temp
                         self.hub.drone_current.append(self.id)

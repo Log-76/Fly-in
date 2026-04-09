@@ -61,7 +61,8 @@ class Parse():
                         temp = line.removeprefix("connection: ").split()
                         if len(temp) > 1:
                             meta = self.__Parsemetadata(temp[1:])
-                            self.data3["connection"].append((temp[0], meta))
+                            self.data3["connection"].append((temp[0].split(
+                                "-"), meta))
                         else:
                             self.data3["connection"].append(temp[0].split("-"))
 
@@ -130,7 +131,3 @@ class Parse():
         except Exception as e:
             print(self.bold_red(str(e)))
             return False
-
-
-m = Parse()
-print(m.load_map("maps/hard/02_capacity_hell.txt"))
