@@ -6,6 +6,8 @@ from Drone import Drone
 class Graph():
     def __init__(self, data: dict) -> None:
         """stock of element"""
+        self.total_cost = 0
+        self.energie_cost = 0
         self.data = data
         self.hub: dict = {}
         self.connexion: list[Connexion] = []
@@ -35,3 +37,13 @@ class Graph():
         self.load_drones()
         for drone in self.drones:
             drone.compute_path()
+
+    def run(self) -> None:
+        """run graph"""
+        self.setup()
+        while any(drone.hub != drone.target for drone in self.drones):
+            for drone in self.drones:
+                drone.move()
+            self.total_cost += 1
+        for drone in self.drones:
+            self.energie_cost += drone.total_cost
