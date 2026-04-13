@@ -14,7 +14,7 @@ class Drone():
         self.path: list[Zone] = []
         self.stock = {"normal": 1, "restricted": 2, "priority": 1}
 
-    def move(self) -> None:
+    def move(self) -> str | None:
         """deplacement"""
         if self.target != self.hub:
             if self.couldown == 0:
@@ -22,15 +22,17 @@ class Drone():
                     temp = self.path[self.index]
                     if temp.zone == "restricted":
                         self.couldown += 1
-                        pass
-                    if temp.can_enter() is True:
+                        return f"D{self.id}-{self.hub.name}->{temp.name}"
+                    elif temp.can_enter() is True:
                         self.total_cost += self.stock[temp.zone]
                         self.hub.drone_current.remove(self.id)
                         self.hub = temp
                         self.hub.drone_current.append(self.id)
                         self.index += 1
+                        return f"D{self.id}-{self.hub.name}"
             else:
                 self.couldown -= 1
+                return None
 
     def compute_path(self) -> None:
         """chemin de resolution avec BFS"""
