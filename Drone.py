@@ -13,6 +13,7 @@ class Drone():
         self.couldown = 0
         self.path: list[Zone] = []
         self.stock = {"normal": 1, "restricted": 2, "priority": 1}
+        self.couldown_bool = False
 
     def move(self) -> str | None:
         """deplacement"""
@@ -20,10 +21,15 @@ class Drone():
             if self.couldown == 0:
                 if self.index < len(self.path):
                     temp = self.path[self.index]
-                    if temp.zone == "restricted":
+                    if (temp.can_enter() is True and
+                            temp.zone == "restricted" and
+                            self.couldown_bool is False):
                         self.couldown += 1
+                        self.index += 1
                         return f"D{self.id}-{self.hub.name}->{temp.name}"
-                    elif temp.can_enter() is True:
+                    elif (temp.can_enter() is True or
+                          self.couldown_bool is True):
+                        self.couldown_bool = False
                         self.total_cost += self.stock[temp.zone]
                         self.hub.drone_current.remove(self.id)
                         self.hub = temp
@@ -32,6 +38,9 @@ class Drone():
                         return f"D{self.id}-{self.hub.name}"
             else:
                 self.couldown -= 1
+                if self.couldown == 0:
+                    self.couldown_bool = True
+                    return self.move()
                 return None
 
     def compute_path(self) -> None:
