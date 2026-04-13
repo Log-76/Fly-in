@@ -71,6 +71,7 @@ class Graph():
         self.setup()
         while any(drone.hub != drone.target for drone in self.drones):
             move = []
+            res = None
             for drone in self.drones:
                 if drone.hub != drone.target:
                     res = drone.move()
@@ -78,6 +79,6 @@ class Graph():
                     move.append(res)
             self.total_cost += 1
             if move:
-                print("".join(move))
+                print(" ".join(move))
         for drone in self.drones:
             self.energie_cost += drone.total_cost
