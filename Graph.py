@@ -54,7 +54,6 @@ class Graph():
         for i in range(0, self.data["nb_drones"]):
             self.drones.append(Drone(i, self.hub[self.data["start_hub"][0]],
                                      self.hub[self.data["end_hub"][0]]))
-            i += 1
         for drone in self.drones:
             drone.hub.drone_current.append(drone.id)
 
@@ -82,3 +81,5 @@ class Graph():
                 print(" ".join(move))
         for drone in self.drones:
             self.energie_cost += drone.total_cost
+        print("Energie cost", self.total_cost)
+        print(f"Total energy cost: {self.energie_cost}")
