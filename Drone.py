@@ -76,24 +76,23 @@ class Drone():
                 if neighbor.zone == "blocked":
                     continue
 
-                weight = self.stock.get(neighbor.zone, 1)
+                # --- CALCUL DU POIDS STRATÉGIQUE ---
+                # Restricted = 2 tours, Normal = 1 tour
+                weigth = self.stock.get(neighbor.zone, 1)
+
+                # Bonus pour les zones priority
+                # (on réduit virtuellement le coût)
                 if neighbor.zone == "priority":
-                    weight = 0.1 # Priorité forte
+                    weigth = 0.1
+                if link.current_drones >= int(link.maxlink):
+                    link_penalty = 3.0
+                else:
+                    link_penalty = 0
+                new_cost = (current_cost + weigth + link_penalty +
+                            (len(neighbor.drone_current) /
+                             neighbor.max_drone) * 1)
 
-                # Pénalité si le lien est plein
-                link_penalty = 3.0 if link.current_drones >= int(link.maxlink) else 0
-
-                # Multiplicateur de congestion élevé (1.5) pour la répartition
-                congestion = (len(neighbor.drone_current) / max(1, neighbor.max_drone)) * 1.5
-
-                new_cost = current_cost + weight + link_penalty + congestion
-
-                # --- ANTI-BOUCLE INFINIE (L'INERTIE) ---
-                # Si le voisin fait déjà partie de notre chemin actuel, 
-                # on réduit son coût de 0.2 pour éviter de changer d'avis pour rien.
-                if neighbor in self.path:
-                    new_cost -= 0.2
-
+                # Si on trouve un chemin moins coûteux vers ce voisin
                 if neighbor not in costs or new_cost < costs[neighbor]:
                     costs[neighbor] = new_cost
                     parents[neighbor] = current_zone
