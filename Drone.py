@@ -8,6 +8,7 @@ class Drone():
         self.id = id
         self.hub: Zone = hub
         self.target = target
+        self.stuck = 0
         self.index = 0
         self.total_cost = 0
         self.couldown = 0
@@ -21,21 +22,31 @@ class Drone():
             if self.couldown == 0:
                 if self.index < len(self.path):
                     temp = self.path[self.index]
-                    if (temp.can_enter() is True and
-                            temp.zone == "restricted" and
-                            self.couldown_bool is False):
-                        self.couldown += 1
-                        self.index += 1
-                        return f"D{self.id}-{self.hub.name}->{temp.name}"
-                    elif (temp.can_enter() is True or
-                          self.couldown_bool is True):
-                        self.couldown_bool = False
-                        self.total_cost += self.stock[temp.zone]
-                        self.hub.drone_current.remove(self.id)
-                        self.hub = temp
-                        self.hub.drone_current.append(self.id)
-                        self.index += 1
-                        return f"D{self.id}-{self.hub.name}"
+                    connection = None
+                    for neighbor, link in self.hub.adjacent:
+                        if neighbor == temp:
+                            connection = link
+                            break
+                    if temp.can_enter() and (connection is None
+                                             or connection.current_drones <
+                                             int(connection.maxlink)):
+                        if (temp.can_enter() is True and
+                                temp.zone == "restricted" and
+                                self.couldown_bool is False):
+                            self.couldown += 1
+                            self.index += 1
+                            return f"D{self.id}-{self.hub.name}->{temp.name}"
+                        elif (temp.can_enter() is True or
+                              self.couldown_bool is True):
+                            if self.couldown_bool and connection:
+                                connection.current_drones -= 1
+                            self.couldown_bool = False
+                            self.total_cost += self.stock[temp.zone]
+                            self.hub.drone_current.remove(self.id)
+                            self.hub = temp
+                            self.hub.drone_current.append(self.id)
+                            self.index += 1
+                            return f"D{self.id}-{self.hub.name}"
             else:
                 self.couldown -= 1
                 if self.couldown == 0:
@@ -45,6 +56,9 @@ class Drone():
 
     def compute_path(self) -> None:
         """chemin de resolution avec difshrack"""
+        if self.hub == self.target:
+            self.path = []
+            return
         # 1. File de priorité : (coût_cumulé, zone_actuelle)
         queu = [(0, 0, self.hub)]
         # 2. Suivi des coûts et des parents
@@ -58,7 +72,7 @@ class Drone():
                 break
 
             # Sinon, on regarde les voisins
-            for neighbor in current_zone.adjacent:
+            for neighbor, link in current_zone.adjacent:
                 if neighbor.zone == "blocked":
                     continue
 
@@ -69,10 +83,14 @@ class Drone():
                 # Bonus pour les zones priority
                 # (on réduit virtuellement le coût)
                 if neighbor.zone == "priority":
-                    weigth = 0.5
-
-                new_cost = current_cost + weigth + (len(neighbor.drone_current)
-                                                    / neighbor.max_drone) * 2
+                    weigth = 0.1
+                if link.current_drones >= int(link.maxlink):
+                    link_penalty = 3.0
+                else:
+                    link_penalty = 0
+                new_cost = (current_cost + weigth + link_penalty +
+                            (len(neighbor.drone_current) /
+                             neighbor.max_drone) * 1)
 
                 # Si on trouve un chemin moins coûteux vers ce voisin
                 if neighbor not in costs or new_cost < costs[neighbor]:

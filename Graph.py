@@ -72,14 +72,19 @@ class Graph():
         self.setup()
         while any(drone.hub != drone.target for drone in self.drones):
             move = []
-            for drone in self.drones:
+            sorted_drones = sorted(self.drones,
+                                   key=lambda d: (len(d.path), d.id))
+            for drone in sorted_drones:
                 if drone.hub != drone.target:
                     res = drone.move()
                     if res:
                         move.append(res)
+                        drone.stuck = 0
                     else:
-                        if self.total_cost % 10 == 0:
+                        if drone.stuck >= 1 and self.total_cost % 2 == 0:
                             drone.compute_path()
+                            drone.stuck = 0
+                        drone.stuck += 1
             self.total_cost += 1
             if move:
                 print(" ".join(move))

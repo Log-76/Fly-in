@@ -29,6 +29,6 @@ class Zone():
             return False
         return True
 
-    def add_neighbor(self, neighbor: 'Zone') -> None:
+    def add_neighbor(self, neighbor: 'Zone', connexion: Any) -> None:
         """add neighbor"""
-        self.adjacent.append(neighbor)
+        self.adjacent.append((neighbor, connexion))
