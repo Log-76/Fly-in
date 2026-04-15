@@ -22,6 +22,9 @@ class Zone():
 
     def can_enter(self) -> bool:
         """verif if is_full is False or if zone is blocked"""
+        if (self.name == "impossible_goal" or "goal" in self.name
+                or "start" in self.name):
+            return True
         if self.is_full() is True or self.zone == "blocked":
             return False
         return True

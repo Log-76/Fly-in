@@ -15,12 +15,13 @@ class Graph():
 
     def load_hub(self) -> None:
         """this fonction create all hub need"""
-        self.hub["start"] = Zone(self.data["start_hub"][0],
-                                 self.data["start_hub"][1],
-                                 self.data["start_hub"][2],
-                                 self.data["start_hub"][3]["zone"],
-                                 self.data["start_hub"][3]["max_drones"],
-                                 self.data["start_hub"][3]["color"])
+        start = self.data["start_hub"][0]
+        self.hub[start] = Zone(self.data["start_hub"][0],
+                               self.data["start_hub"][1],
+                               self.data["start_hub"][2],
+                               self.data["start_hub"][3]["zone"],
+                               self.data["start_hub"][3]["max_drones"],
+                               self.data["start_hub"][3]["color"])
         for temps in self.data["hub"]:
             self.hub[temps[0]] = Zone(temps[0],
                                       temps[1],
@@ -28,12 +29,13 @@ class Graph():
                                       temps[3]["zone"],
                                       temps[3]["max_drones"],
                                       temps[3]["color"])
-        self.hub["goal"] = Zone(self.data["end_hub"][0],
-                                self.data["end_hub"][1],
-                                self.data["end_hub"][2],
-                                self.data["end_hub"][3]["zone"],
-                                self.data["end_hub"][3]["max_drones"],
-                                self.data["end_hub"][3]["color"])
+        end = self.data["end_hub"][0]
+        self.hub[end] = Zone(self.data["end_hub"][0],
+                             self.data["end_hub"][1],
+                             self.data["end_hub"][2],
+                             self.data["end_hub"][3]["zone"],
+                             self.data["end_hub"][3]["max_drones"],
+                             self.data["end_hub"][3]["color"])
 
     def load_connex(self) -> None:
         """this fonction create all connexion in data"""
@@ -70,16 +72,18 @@ class Graph():
         self.setup()
         while any(drone.hub != drone.target for drone in self.drones):
             move = []
-            res = None
             for drone in self.drones:
                 if drone.hub != drone.target:
                     res = drone.move()
-                if res is not None:
-                    move.append(res)
+                    if res:
+                        move.append(res)
+                    else:
+                        if self.total_cost % 10 == 0:
+                            drone.compute_path()
             self.total_cost += 1
             if move:
                 print(" ".join(move))
         for drone in self.drones:
             self.energie_cost += drone.total_cost
-        print("Energie cost", self.total_cost)
+        print("tours", self.total_cost)
         print(f"Total energy cost: {self.energie_cost}")
