@@ -38,6 +38,8 @@ class Drone():
                             return f"D{self.id}-{self.hub.name}->{temp.name}"
                         elif (temp.can_enter() is True or
                               self.couldown_bool is True):
+                            old_name_colored = self.hub.get_colored_name()
+                            new_name_colored = temp.get_colored_name()
                             if self.couldown_bool and connection:
                                 connection.current_drones -= 1
                             self.couldown_bool = False
@@ -46,7 +48,8 @@ class Drone():
                             self.hub = temp
                             self.hub.drone_current.append(self.id)
                             self.index += 1
-                            return f"D{self.id}-{self.hub.name}"
+                            return (f"D{self.id}-{old_name_colored}"
+                                    f"->{new_name_colored}")
             else:
                 self.couldown -= 1
                 if self.couldown == 0:

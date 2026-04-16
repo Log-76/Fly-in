@@ -32,3 +32,20 @@ class Zone():
     def add_neighbor(self, neighbor: 'Zone', connexion: Any) -> None:
         """add neighbor"""
         self.adjacent.append((neighbor, connexion))
+
+    def get_colored_name(self) -> str:
+        """Retourne le nom de la zone avec les codes ANSI directement"""
+        colors = {
+            "green": "\033[32m",
+            "blue": "\033[34m",
+            "red": "\033[31m",
+            "yellow": "\033[33m",
+            "cyan": "\033[36m",
+            "magenta": "\033[35m",
+            "reset": "\033[0m"
+        }
+        # On récupère le code couleur, sinon reset par défaut
+        color_code = colors.get(self.color, colors["reset"])
+        reset = colors["reset"]
+
+        return f"{color_code}{self.name}{reset}"
