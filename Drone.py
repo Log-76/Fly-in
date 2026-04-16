@@ -91,7 +91,9 @@ class Drone():
                 new_cost = (current_cost + weigth + link_penalty +
                             (len(neighbor.drone_current) /
                              neighbor.max_drone) * 0.9)
-
+                if (self.path and self.index < len(self.path) and
+                        neighbor == self.path[self.index]):
+                    new_cost -= 0.6
                 # Si on trouve un chemin moins coûteux vers ce voisin
                 if neighbor not in costs or new_cost < costs[neighbor]:
                     costs[neighbor] = new_cost
