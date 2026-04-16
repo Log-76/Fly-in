@@ -36,16 +36,33 @@ class Zone():
     def get_colored_name(self) -> str:
         """Retourne le nom de la zone avec les codes ANSI directement"""
         colors = {
-            "green": "\033[32m",
-            "blue": "\033[34m",
-            "red": "\033[31m",
+            "green": "\033[1;32m",
+            "lime": "\033[38;5;118m",
+            "blue": "\033[1;34m",
+            "red": "\033[1;31m",
+            "darkred": "\033[1;38;5;88m",
+            "crimson": "\033[1;38;5;197m",
+            "brown": "\033[0;33m",
+            "violet": "\033[38;5;183m",
+            "orange": "\033[38;5;208m",
+            "maroon": "\033[38;5;52m",
+            "gold": "\033[38;5;220m",
             "yellow": "\033[33m",
             "cyan": "\033[36m",
+            "purple": "\033[38;5;129m",
             "magenta": "\033[35m",
             "reset": "\033[0m"
         }
         # On récupère le code couleur, sinon reset par défaut
-        color_code = colors.get(self.color, colors["reset"])
         reset = colors["reset"]
-
+        rainbow_name = ""
+        if self.color == "rainbow":
+            rainbow_codes = ["\033[31m", "\033[38;5;208m",
+                             "\033[33m", "\033[32m",
+                             "\033[34m", "\033[35m"]
+            for i, char in enumerate(self.name):
+                color = rainbow_codes[i % len(rainbow_codes)]
+                rainbow_name += f"{color}{char}"
+            return f"{rainbow_name}{reset}"
+        color_code = colors.get(self.color, colors["reset"])
         return f"{color_code}{self.name}{reset}"
