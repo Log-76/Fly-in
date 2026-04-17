@@ -88,7 +88,7 @@ class Graph():
                         move.append(res)
                         drone.stuck = 0
                     else:
-                        # Recalcul après 2 tours de blocage (règle 42)
+                        # Recalcul après 2 tours de blocage
                         if drone.stuck >= 2:
                             drone.compute_path()
                             # Si après recalcul le chemin est vide
