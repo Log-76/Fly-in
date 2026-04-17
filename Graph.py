@@ -49,12 +49,13 @@ class Graph():
             else:
                 hub_b, hub_a = temps[0], temps[1]
                 self.connexion.append(Connexion(self.hub[hub_a],
-                                                self.hub[hub_b]))
+                                                self.hub[hub_b], {}))
 
     def load_drones(self) -> None:
         """this fonction create all drone need"""
         for i in range(0, self.data["nb_drones"]):
-            self.drones.append(Drone(i, self.hub[self.data["start_hub"][0]],
+            self.drones.append(Drone(str(i),
+                                     self.hub[self.data["start_hub"][0]],
                                      self.hub[self.data["end_hub"][0]]))
         for drone in self.drones:
             drone.hub.drone_current.append(drone.id)

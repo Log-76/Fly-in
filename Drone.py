@@ -1,4 +1,5 @@
 from Zone import Zone
+from typing import Any
 import heapq
 
 
@@ -55,7 +56,7 @@ class Drone():
                 if self.couldown == 0:
                     self.couldown_bool = True
                     return self.move()
-                return None
+        return None
 
     def compute_path(self) -> None:
         """chemin de resolution avec difshrack"""
@@ -66,7 +67,7 @@ class Drone():
         queu = [(0, 0, self.hub)]
         # 2. Suivi des coûts et des parents
         costs = {self.hub: 0}
-        parents = {self.hub: None}
+        parents: Any = {self.hub: None}
         while queu:
             # Récupère la zone avec le coût le plus faible
             current_cost, _, current_zone = heapq.heappop(queu)
@@ -81,7 +82,7 @@ class Drone():
 
                 # --- CALCUL DU POIDS STRATÉGIQUE ---
                 # Restricted = 2 tours, Normal = 1 tour
-                weigth = self.stock.get(neighbor.zone, 1)
+                weigth: float = self.stock.get(neighbor.zone, 1)
 
                 # Bonus pour les zones priority
                 # (on réduit virtuellement le coût)

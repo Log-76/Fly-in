@@ -2,11 +2,11 @@ class Parse():
     """Parse a drone map config file."""
     def __init__(self) -> None:
         """Initialize the parser with an empty data structure."""
-        self.data3 = {"nb_drones": None,
-                      "start_hub": None,
-                      "end_hub": None,
-                      "hub": [],
-                      "connection": []}
+        self.data3: dict = {"nb_drones": None,
+                            "start_hub": None,
+                            "end_hub": None,
+                            "hub": [],
+                            "connection": []}
 
     def __Parsemetadata(self, parts: list[str]) -> dict:
         """Extract tags like color=#FF0000 or max_drones=5
@@ -20,8 +20,10 @@ class Parse():
                                                "restricted", "priority"]:
                     raise Exception(f"Invalid zone type: {f}")
                 if key == "max_drones":
-                    f = int(f)
-                meta[key] = f
+                    f2 = int(f)
+                    meta[key] = f2
+                else:
+                    meta[key] = f
         return meta
 
     def load_map(self, file: str) -> dict | None:
@@ -72,6 +74,7 @@ class Parse():
                     return None
         except FileNotFoundError:
             print("file not found for valid file use map/dict/file")
+            return None
 
     def bold_red(self, text: str) -> str:
         """A function making strings of text bold red."""

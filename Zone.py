@@ -3,7 +3,7 @@ from typing import Any
 
 class Zone():
     def __init__(self, name: str, x: int, y: int, zone: str,
-                 max_drone: int = 1, color=None) -> None:
+                 max_drone: int = 1, color: Any = None) -> None:
         """init for data for zone"""
         self.name = name
         self.x = x
@@ -12,7 +12,7 @@ class Zone():
         self.zone = zone
         self.max_drone = max_drone
         self.drone_current: list[Any] = []
-        self.adjacent: list['Zone'] = []
+        self.adjacent: list[tuple] = []
 
     def is_full(self) -> bool:
         """verif if max_drone is true"""
