@@ -1,14 +1,17 @@
+from typing import Any
+
+
 class Parse():
     """Parse a drone map config file."""
     def __init__(self) -> None:
         """Initialize the parser with an empty data structure."""
-        self.data3: dict = {"nb_drones": None,
-                            "start_hub": None,
-                            "end_hub": None,
-                            "hub": [],
-                            "connection": []}
+        self.data3: dict[Any, Any] = {"nb_drones": None,
+                                      "start_hub": None,
+                                      "end_hub": None,
+                                      "hub": [],
+                                      "connection": []}
 
-    def __Parsemetadata(self, parts: list[str]) -> dict:
+    def __Parsemetadata(self, parts: list[str]) -> dict[Any, Any]:
         """Extract tags like color=#FF0000 or max_drones=5
         from a list of strings."""
         meta = {"zone": "normal", "color": "none", "max_drones": 1}
@@ -26,7 +29,7 @@ class Parse():
                     meta[key] = f
         return meta
 
-    def load_map(self, file: str) -> dict | None:
+    def load_map(self, file: str) -> dict[Any, Any] | None:
         """Load and parse the map file and return structured data."""
         try:
             with open(file, 'r') as f:
@@ -81,7 +84,7 @@ class Parse():
         color, reset = "\033[1;91m", "\033[0m"
         return f"{color}{text}{reset}"
 
-    def verif_data(self, data: dict) -> bool:
+    def verif_data(self, data: dict[Any, Any]) -> bool:
         """verif of data"""
         try:
             if data["nb_drones"] is None or data["nb_drones"] <= 0:

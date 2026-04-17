@@ -12,7 +12,7 @@ class Zone():
         self.zone = zone
         self.max_drone = max_drone
         self.drone_current: list[Any] = []
-        self.adjacent: list[tuple] = []
+        self.adjacent: list[tuple[Any, Any]] = []
 
     def is_full(self) -> bool:
         """verif if max_drone is true"""

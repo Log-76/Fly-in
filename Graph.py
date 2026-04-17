@@ -1,15 +1,16 @@
 from Zone import Zone
 from Connection import Connexion
 from Drone import Drone
+from typing import Any
 
 
 class Graph():
-    def __init__(self, data: dict) -> None:
+    def __init__(self, data: dict[Any, Any]) -> None:
         """stock of element"""
         self.total_cost = 0
         self.energie_cost = 0
         self.data = data
-        self.hub: dict = {}
+        self.hub: dict[Any, Any] = {}
         self.connexion: list[Connexion] = []
         self.drones: list[Drone] = []
 
