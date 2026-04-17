@@ -133,6 +133,8 @@ class Parse():
                     if key in seen:
                         raise Exception(f"error: duplicate connection {temp}")
                     seen.add(key)
+            elif not data["connection"]:
+                raise Exception("no have connection")
             return True
         except Exception as e:
             print(self.bold_red(str(e)))

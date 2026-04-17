@@ -74,23 +74,35 @@ class Graph():
         self.setup()
         while any(drone.hub != drone.target for drone in self.drones):
             move = []
+            # On trie pour la priorité
             sorted_drones = sorted(self.drones,
                                    key=lambda d: (len(d.path), d.id))
+            drones_trying_to_move = 0
+            drones_blocked_this_turn = 0
+
             for drone in sorted_drones:
                 if drone.hub != drone.target:
+                    drones_trying_to_move += 1
                     res = drone.move()
                     if res:
                         move.append(res)
                         drone.stuck = 0
                     else:
-                        if drone.stuck >= 1 and self.total_cost % 2 == 0:
+                        # Recalcul après 2 tours de blocage (règle 42)
+                        if drone.stuck >= 2:
                             drone.compute_path()
-                            drone.stuck = 0
+                            # Si après recalcul le chemin est vide
+                            if not drone.path:
+                                raise Exception(f"Drone {drone.id} has no "
+                                                "possible path to target")
                         drone.stuck += 1
+                        drones_blocked_this_turn += 1
+
+            # SECURITÉ : Si tous les drones qui doivent bouger sont bloqués
+            if (drones_trying_to_move > 0 and
+                    drones_blocked_this_turn == drones_trying_to_move):
+                raise Exception("Global Deadlock: No drones can move anymore")
+
             self.total_cost += 1
             if move:
                 print(" ".join(move))
-        for drone in self.drones:
-            self.energie_cost += drone.total_cost
-        print("tours", self.total_cost)
-        print(f"Total energy cost: {self.energie_cost}")
