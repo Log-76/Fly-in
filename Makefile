@@ -6,8 +6,8 @@ VENV       := .venv
 
 PYTHON     := /bin/python3
 PIP        := $(VENV)/bin/pip
-PACKAGE    := mazegen-1.0.0
-MAIN       := a_maze_ing.py
+PACKAGE    := fly-in-1.0.0
+MAIN 	   := Fly_in.py
 CONFIG	   := maps/easy/01_linear_path.txt
 
 # ------------------------------------------------------------
@@ -16,7 +16,7 @@ CONFIG	   := maps/easy/01_linear_path.txt
 
 RESET		:=	\033[0m
 GRAY		:=	\033[1;90m
-RED		:= 	\033[1;91m
+RED		    := 	\033[1;91m
 GREEN		:=	\033[1;92m
 YELLOW		:=	\033[1;93m
 BLUE		:=	\033[1;94m
@@ -30,7 +30,7 @@ WHITE		:=	\033[1;97m
 
 ECHO		:=	@echo
 FIND		:=	@find
-RM		:=	@/bin/rm -rf
+RM		    :=	@/bin/rm -rf
 
 # ============================================================
 #  RULES
